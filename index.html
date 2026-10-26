@@ -2,10 +2,14 @@
 <html lang="bg" data-app-mode="dark">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>cx-apps — Две приложения. Един вход.</title>
 <meta name="description" content="CX Notes за бележки на стикери и CX Tracks за маршрути — двете приложения на cx-apps.site, събрани на едно място.">
 <meta name="theme-color" content="#04091a">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="icon" type="image/png" sizes="192x192" href="apps/icon-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="apps/icon-180.png">
 <meta property="og:type" content="website">
@@ -60,7 +64,11 @@
     overflow-x: clip;
     min-height: 100vh;
     min-height: 100dvh;
-    padding: 20px 16px 26px;
+    padding:
+      calc(20px + env(safe-area-inset-top, 0px))
+      calc(16px + env(safe-area-inset-right, 0px))
+      calc(26px + env(safe-area-inset-bottom, 0px))
+      calc(16px + env(safe-area-inset-left, 0px));
     background: var(--app-bg);
   }
   /* the cyan glow behind the top of the page, as in the plan mockups */
@@ -252,7 +260,13 @@
 
   /* ---------- wide ---------- */
   @media (min-width: 760px) {
-    .page { padding: 22px 40px 30px; }
+    .page {
+      padding:
+        calc(22px + env(safe-area-inset-top, 0px))
+        calc(40px + env(safe-area-inset-right, 0px))
+        calc(30px + env(safe-area-inset-bottom, 0px))
+        calc(40px + env(safe-area-inset-left, 0px));
+    }
 
     .brand { gap: 11px; }
     .brand-word { font-size: 17px; }
@@ -355,5 +369,12 @@
 
   </div>
 </div>
+<script>
+  if ('serviceWorker' in navigator) {
+    addEventListener('load', function () {
+      navigator.serviceWorker.register('sw.js').catch(function () {});
+    });
+  }
+</script>
 </body>
 </html>
