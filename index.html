@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="bg" data-app-mode="dark">
+<html lang="bg" data-lang="bg" data-app-mode="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -7,6 +7,16 @@
 <meta name="description" content="CX Notes за бележки на стикери и CX Tracks за маршрути — двете приложения на cx-apps.site, събрани на едно място.">
 <meta name="theme-color" content="#04091a">
 <link rel="manifest" href="manifest.webmanifest">
+<script>
+  /* the chosen language is put on <html> before the first paint, so the page
+     never flashes the wrong one */
+  try {
+    if (localStorage.getItem('cx-apps-lang') === 'en') {
+      document.documentElement.setAttribute('data-lang', 'en');
+      document.documentElement.setAttribute('lang', 'en');
+    }
+  } catch (e) {}
+</script>
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -41,6 +51,9 @@
     --app-font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     --app-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
     --app-radius: 16px;
+    /* one headline size for the page and for the app names in the tiles */
+    --h1-size: clamp(26px, 7.1vw, 33px);
+    --h1-lh: 1.1;
   }
   html[data-app-mode="dark"] { color-scheme: dark; }
 
@@ -89,6 +102,38 @@
 
   .wrap { width: 100%; max-width: 1180px; margin: 0 auto; }
 
+  /* ---------- language switch ---------- */
+  .topbar { display: flex; justify-content: flex-end; margin: 0 0 4px; }
+  .lang {
+    display: inline-flex;
+    gap: 2px;
+    padding: 3px;
+    border: 1px solid var(--app-line);
+    border-radius: 999px;
+    background: rgba(13, 28, 57, .65);
+  }
+  .lang button {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: var(--app-dim);
+    font: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: 5px 11px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background .2s, color .2s;
+  }
+  .lang button:hover { color: var(--app-ink); }
+  .lang button[aria-pressed="true"] { background: rgba(63, 208, 255, .18); color: var(--app-ink); }
+  .lang button:focus-visible { outline: 2px solid var(--app-cyan); outline-offset: 2px; }
+
+  /* ---------- language ---------- */
+  html[data-lang="bg"] .lang-en,
+  html[data-lang="en"] .lang-bg { display: none !important; }
+
   /* ---------- brand header ---------- */
   .brand { display: flex; align-items: center; gap: 9px; min-width: 0; }
   .brand-word {
@@ -108,9 +153,7 @@
 
   /* ---------- hero ---------- */
   .hero {
-    /* the h1's own metrics, so the mark beside it can be measured in h1 lines */
-    --h1-size: clamp(26px, 7.1vw, 33px);
-    --h1-lh: 1.1;
+    /* the mark is two headline lines tall, so it follows --h1-size */
     --mark: calc(2 * var(--h1-size) * var(--h1-lh));
     margin: 22px 0 18px;
   }
@@ -216,14 +259,15 @@
   }
 
   .tile-body { padding: 14px 15px 15px; display: flex; flex-direction: column; flex: 1; min-width: 0; }
-  /* the app's name, in a bar above its picture */
+  /* the app's name, in a bar above its picture, at the headline's size */
   .tile-name {
     margin: 0;
     padding: 12px 15px 11px;
-    font-size: 17px;
-    letter-spacing: -.02em;
-    font-weight: 700;
-    line-height: 1.25;
+    font-size: var(--h1-size);
+    line-height: var(--h1-lh);
+    letter-spacing: -.03em;
+    font-weight: 800;
+    overflow-wrap: break-word;
   }
   .tile-body p { margin: 0 0 14px; color: var(--app-dim); font-size: 12.5px; line-height: 1.55; }
   .tile-foot {
@@ -286,7 +330,7 @@
 
     .tiles { grid-template-columns: 1fr 1fr; gap: 24px; align-items: stretch; }
     .tile-body { padding: 20px 22px; }
-    .tile-name { font-size: 22px; padding: 16px 22px 14px; }
+    .tile-name { padding: 16px 22px 14px; }
     .tile-body p { font-size: 14.5px; line-height: 1.6; margin-bottom: 18px; }
     .tile-foot { padding-top: 14px; }
     .tile-foot .url { font-size: 11.5px; }
@@ -298,14 +342,16 @@
      From here the text column is wide enough to hold the logo plus two
      headline lines, which is what keeps the mark exactly two lines tall. */
   @media (min-width: 860px) {
+    :root {
+      --h1-size: clamp(30px, 3.7vw, 50px);
+      --h1-lh: 1.04;
+    }
     .hero {
       display: grid;
       grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
       align-items: center;
       gap: 44px;
       margin: 40px 0 30px;
-      --h1-size: clamp(30px, 3.7vw, 50px);
-      --h1-lh: 1.04;
     }
     .hero-head { gap: 18px; }
     .hero-mark { border-radius: 18px; }
@@ -324,17 +370,27 @@
       <span class="pill">2 приложения</span>
     </header-->
 
+    <div class="topbar">
+      <div class="lang" role="group" aria-label="Език / Language">
+        <button type="button" data-lang-set="bg" aria-pressed="true">BG</button>
+        <button type="button" data-lang-set="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
+
     <section class="hero">
       <div class="hero-text">
         <div class="hero-head">
           <img class="hero-mark" src="apps/icon-192.png" width="192" height="192"
+               data-alt-bg="Икона на cx-apps" data-alt-en="cx-apps icon"
                alt="Икона на cx-apps">
-          <h1>Портал за WEB приложения.</h1>
+          <h1><span class="lang-bg">Портал за WEB приложения.</span><span class="lang-en">A portal for WEB apps.</span></h1>
         </div>
-        <p class="lede">Достъпни от всеки браузър.<span class="lede-more"> Изберете плочка и стартирайте приложението.</span></p>
+        <p class="lede"><span class="lang-bg">Достъпни от всеки браузър.<span class="lede-more"> Изберете плочка и стартирайте приложението.</span></span><span class="lang-en">Available from any browser.<span class="lede-more"> Pick a tile and open the app.</span></span></p>
       </div>
       <figure class="hero-art">
         <img src="apps/banner.jpg" width="718" height="499" fetchpriority="high" decoding="async"
+             data-alt-bg="Банер на cx-apps.site: светеща врата и четири цветни икони — настройки, бележка, календар и графика"
+             data-alt-en="cx-apps.site banner: a glowing doorway and four coloured icons for settings, notes, calendar and a chart"
              alt="Банер на cx-apps.site: светеща врата и четири цветни икони — настройки, бележка, календар и графика">
       </figure>
     </section>
@@ -345,18 +401,20 @@
         <h2 class="tile-name">CX Notes</h2>
         <div class="tile-img">
           <img src="apps/notes.jpg" width="800" height="739" loading="lazy" decoding="async"
+               data-alt-bg="CX Notes: бележки на стикери, закачени върху коркова дъска"
+               data-alt-en="CX Notes: sticky notes pinned to a cork board"
                alt="CX Notes: бележки на стикери, закачени върху коркова дъска">
         </div>
         <div class="tile-body">
-          <p>CX Notes is a simple, browser‑based tool that lets you create and open your notes on any device — your computer, tablet, iPhone, or anything else you use, no matter if you’re on Windows, Android, macOS, iOS, or Linux.
+          <p class="lang-en">CX Notes is a simple, browser‑based tool that lets you create and open your notes on any device — your computer, tablet, iPhone, or anything else you use, no matter if you’re on Windows, Android, macOS, iOS, or Linux.
              <br>With CX Notes, you can get to your notes quickly, without installing anything — and it even works offline when you need it. Your browser keeps a local copy of your notes and updates it from Google Drive automatically whenever something new is added or changed, so everything stays fast and smooth.
           </p>
-          <p>CX Notes е приложение, работещо в браузъра ви, чрез което може да имате достъп до информацията в бележките, създадени с приложението от вашия компютър, таблет, iPhone и др., независимо дали работите с Windows, Android, macOS, iOS или Linux.
+          <p class="lang-bg">CX Notes е приложение, работещо в браузъра ви, чрез което може да имате достъп до информацията в бележките, създадени с приложението от вашия компютър, таблет, iPhone и др., независимо дали работите с Windows, Android, macOS, iOS или Linux.
              <br>CX Notes осигурява бърз достъп до вашите бележки, без нужда от инсталация и дори при необходимост дава възможност за работа без връзка с интернет. Основният режим на работа използва локална база данни в браузъра, която се обновява автоматично с новите и редактирани бележки от Google Drive и по този начин осигурява оптимална производителност.
           </p>
           <div class="tile-foot">
             <span class="url">cx-notes.cx-apps.site</span>
-            <span class="go">Отвори →</span>
+            <span class="go"><span class="lang-bg">Отвори →</span><span class="lang-en">Open →</span></span>
           </div>
         </div>
       </a>
@@ -365,13 +423,16 @@
         <h2 class="tile-name">CX Tracks</h2>
         <div class="tile-img">
           <img src="apps/tracks.jpg" width="800" height="776" loading="lazy" decoding="async"
+               data-alt-bg="CX Tracks: спътникова карта с начертан маршрут"
+               data-alt-en="CX Tracks: a satellite map with a drawn route"
                alt="CX Tracks: спътникова карта с начертан маршрут">
         </div>
         <div class="tile-body">
-          <p>Записва маршрута, докато вървиш или караш. Старт, междинни точки и край на една карта. Разстояние, време и надморска височина за всяка следа. Спътникова карта, за да виждаш терена. Следите остават при теб и се пазят на телефона.</p>
+          <p class="lang-en">Records your route while you walk or drive. Start, waypoints and finish on one map. Distance, time and elevation for every track. A satellite map so you can see the terrain. Your tracks stay with you, stored on the phone.</p>
+          <p class="lang-bg">Записва маршрута, докато вървиш или караш. Старт, междинни точки и край на една карта. Разстояние, време и надморска височина за всяка следа. Спътникова карта, за да виждаш терена. Следите остават при теб и се пазят на телефона.</p>
           <div class="tile-foot">
             <span class="url">cx-tracks.cx-apps.site</span>
-            <span class="go">Отвори →</span>
+            <span class="go"><span class="lang-bg">Отвори →</span><span class="lang-en">Open →</span></span>
           </div>
         </div>
       </a>
@@ -383,11 +444,38 @@
   </div>
 </div>
 <script>
-  if ('serviceWorker' in navigator) {
-    addEventListener('load', function () {
-      navigator.serviceWorker.register('sw.js').catch(function () {});
+  (function () {
+    var root = document.documentElement;
+    var buttons = [].slice.call(document.querySelectorAll('.lang button'));
+    var KEY = 'cx-apps-lang';
+
+    function apply(lang, save) {
+      root.setAttribute('data-lang', lang);
+      root.setAttribute('lang', lang);
+      buttons.forEach(function (b) {
+        b.setAttribute('aria-pressed', b.getAttribute('data-lang-set') === lang ? 'true' : 'false');
+      });
+      [].slice.call(document.querySelectorAll('img[data-alt-bg]')).forEach(function (img) {
+        var alt = img.getAttribute(lang === 'bg' ? 'data-alt-bg' : 'data-alt-en');
+        if (alt) img.setAttribute('alt', alt);
+      });
+      if (save) { try { localStorage.setItem(KEY, lang); } catch (e) {} }
+    }
+
+    buttons.forEach(function (b) {
+      b.addEventListener('click', function () {
+        apply(b.getAttribute('data-lang-set'), true);
+      });
     });
-  }
+
+    apply(root.getAttribute('data-lang') === 'en' ? 'en' : 'bg', false);
+
+    if ('serviceWorker' in navigator) {
+      addEventListener('load', function () {
+        navigator.serviceWorker.register('sw.js').catch(function () {});
+      });
+    }
+  })();
 </script>
 </body>
 </html>
