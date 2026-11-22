@@ -2,7 +2,7 @@
 // anything else same-origin (the vendored pdf-lib and the HEIC wasm ~1.5 MB) is
 // cached the first time it is used. Bump VERSION to invalidate the cache.
 
-const VERSION = 'cx-tools-v2';
+const VERSION = 'cx-tools-v3';
 const CACHE = VERSION;
 
 const SHELL = [
@@ -13,6 +13,7 @@ const SHELL = [
   './assets/js/shell.js',
   './assets/js/lib/util.js',
   './assets/js/lib/image.js',
+  './assets/js/lib/photo.js',
   './assets/js/lib/heic.js',
   './assets/js/lib/zip-read.js',
   './assets/js/lib/zip-write.js',

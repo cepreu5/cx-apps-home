@@ -5,8 +5,8 @@
 // instead of being re-encoded into something bigger.
 
 import { h, formatBytes, pct, yieldToUI } from '../lib/util.js';
-import { decodeImage, compressImage } from '../lib/image.js';
-import { looksLikeHeic, heicToCanvas } from '../lib/heic.js';
+import { compressImage } from '../lib/image.js';
+import { isImageish, decodeAny, fillThumbs } from '../lib/photo.js';
 import { announce } from '../shell.js';
 import { panel, note, stepLine, dropZone, progressBlock, resultRows, downloadAllButton } from './kit.js';
 
@@ -17,33 +17,45 @@ const TARGETS = [
   { id: 'scale', label: 'Само намали размера', bytes: null },
 ];
 
-function isImageish(file) {
-  const type = (file.type || '').toLowerCase();
-  if (type.startsWith('image/')) return true;
-  return /\.(jpe?g|png|webp|heic|heif|gif|bmp|avif)$/i.test(file.name || '');
-}
-
-async function decodeAny(file) {
-  if (await looksLikeHeic(file)) {
-    const canvas = await heicToCanvas(file);
-    return { source: canvas, width: canvas.width, height: canvas.height, close() {} };
-  }
-  return decodeImage(file);
-}
-
 export function start() {
   const app = document.getElementById('app');
   if (!app) return;
   const state = { items: [], target: TARGETS[0].id, busy: false, step: 'pick', resultUrls: [] };
+  let seq = 0;
 
   function addFiles(files) {
+    const added = [];
     for (const file of files) {
       if (!isImageish(file)) continue;
       const duplicate = state.items.some((it) => it.file.name === file.name && it.file.size === file.size);
       if (duplicate) continue;
-      state.items.push({ file, selected: true, previewUrl: URL.createObjectURL(file) });
+      const item = {
+        id: (seq += 1),
+        file,
+        selected: true,
+        previewUrl: URL.createObjectURL(file),
+        thumbUrl: null,
+        thumbState: 'pending',
+        removed: false,
+      };
+      state.items.push(item);
+      added.push(item);
     }
     render();
+    // A HEIC photo has no thumbnail the browser can draw, so every photo gets a
+    // small JPEG of its own instead of an empty square.
+    fillThumbs(added, refreshThumb);
+  }
+
+  /** Put the real picture in a tile once its thumbnail exists. */
+  function refreshThumb(item) {
+    if (!item.thumbUrl) return;
+    const btn = app.querySelector(`.th[data-id="${item.id}"]`);
+    if (!btn) return;
+    const img = h('img', { src: item.thumbUrl, alt: '', decoding: 'async' });
+    const old = btn.querySelector('img, .ph');
+    if (old) old.replaceWith(img);
+    else btn.insertBefore(img, btn.firstChild);
   }
 
   function selected() {
@@ -51,15 +63,16 @@ export function start() {
   }
 
   function thumb(item) {
-    const img = h('img', { src: item.previewUrl, alt: '', loading: 'lazy', decoding: 'async' });
+    const img = h('img', { src: item.thumbUrl || item.previewUrl, alt: '', loading: 'lazy', decoding: 'async' });
     img.addEventListener('error', () => {
-      img.replaceWith(h('span', { class: 'ph' }, 'HEIC'));
+      img.replaceWith(h('span', { class: 'ph' }, 'снимка'));
     });
     const btn = h(
       'button',
       {
         type: 'button',
         class: 'th',
+        'data-id': String(item.id),
         'aria-pressed': item.selected ? 'true' : 'false',
         'aria-label': (item.selected ? 'Махни ' : 'Добави ') + item.file.name,
         title: item.file.name,
@@ -227,7 +240,11 @@ export function start() {
 
   function resetAll() {
     clearResultUrls();
-    for (const it of state.items) URL.revokeObjectURL(it.previewUrl);
+    for (const it of state.items) {
+      it.removed = true;
+      URL.revokeObjectURL(it.previewUrl);
+      if (it.thumbUrl) URL.revokeObjectURL(it.thumbUrl);
+    }
     state.items = [];
     state.target = TARGETS[0].id;
     state.step = 'pick';

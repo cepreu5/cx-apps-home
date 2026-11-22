@@ -2,8 +2,7 @@
 // rotated where you need it. pdf-lib is loaded only when the PDF is built.
 
 import { h, formatBytes, downloadBlob, yieldToUI } from '../lib/util.js';
-import { decodeImage } from '../lib/image.js';
-import { looksLikeHeic, heicToCanvas } from '../lib/heic.js';
+import { isImageish, decodeAny, fillThumbs } from '../lib/photo.js';
 import { announce, remember } from '../shell.js';
 import { panel, note, dropZone, progressBlock } from './kit.js';
 
@@ -12,20 +11,6 @@ const PAGE_SIZES = {
   letter: { label: 'Letter', size: [612, 792] },
   fit: { label: 'Колкото снимката', size: null },
 };
-
-function isImageish(file) {
-  const type = (file.type || '').toLowerCase();
-  if (type.startsWith('image/')) return true;
-  return /\.(jpe?g|png|webp|heic|heif|gif|bmp|avif)$/i.test(file.name || '');
-}
-
-async function decodeAny(file) {
-  if (await looksLikeHeic(file)) {
-    const canvas = await heicToCanvas(file);
-    return { source: canvas, width: canvas.width, height: canvas.height, close() {} };
-  }
-  return decodeImage(file);
-}
 
 /** Draw a decoded image onto a canvas, rotated by 0/90/180/270 and scaled down. */
 function canvasRotated(decoded, rotation, maxEdge = 2200) {
@@ -61,12 +46,48 @@ export function start() {
     dragFrom: -1,
   };
 
+  let seq = 0;
+
   function addFiles(files) {
+    const added = [];
     for (const file of files) {
       if (!isImageish(file)) continue;
-      state.items.push({ file, url: URL.createObjectURL(file), rotation: 0, heic: /\.(heic|heif)$/i.test(file.name) });
+      const item = {
+        id: (seq += 1),
+        file,
+        url: URL.createObjectURL(file),
+        thumbUrl: null,
+        thumbState: 'pending',
+        removed: false,
+        rotation: 0,
+        heic: /\.(heic|heif)$/i.test(file.name),
+      };
+      state.items.push(item);
+      added.push(item);
     }
     render();
+    // Every photo gets a small JPEG of its own for the tile: the browser cannot
+    // draw a HEIC at all, and it keeps the tiles light after a big PDF build.
+    fillThumbs(added, refreshTile);
+  }
+
+  /** What sits in the 54px square of a row. */
+  function media(item) {
+    if (item.thumbUrl) {
+      return h('img', { src: item.thumbUrl, alt: '', style: `transform: rotate(${item.rotation}deg)`, decoding: 'async' });
+    }
+    if (item.heic) return h('span', { class: 'thumb-mono' }, 'HEIC');
+    const img = h('img', { src: item.url, alt: '', style: `transform: rotate(${item.rotation}deg)`, decoding: 'async' });
+    img.addEventListener('error', () => {
+      img.replaceWith(h('span', { class: 'thumb-mono' }, 'снимка'));
+    });
+    return img;
+  }
+
+  /** Swap one row's picture in place, so a thumbnail arriving never redraws the list. */
+  function refreshTile(item) {
+    const el = app.querySelector(`.pitem[data-id="${item.id}"]`);
+    if (el && el.firstElementChild) el.replaceChild(media(item), el.firstElementChild);
   }
 
   function move(from, to) {
@@ -81,6 +102,7 @@ export function start() {
       'div',
       {
         class: 'pitem',
+        'data-id': String(state.items[i].id),
         draggable: 'true',
         ondragstart: (e) => {
           state.dragFrom = i;
@@ -102,14 +124,7 @@ export function start() {
           if (state.dragFrom >= 0 && state.dragFrom !== i) move(state.dragFrom, i);
         },
       },
-      state.items[i].heic
-        ? h('span', { class: 'thumb-mono' }, 'HEIC')
-        : h('img', {
-            src: state.items[i].url,
-            alt: '',
-            style: `transform: rotate(${state.items[i].rotation}deg)`,
-            loading: 'lazy',
-          }),
+      media(state.items[i]),
       h(
         'span',
         {},
@@ -143,7 +158,10 @@ export function start() {
             type: 'button',
             'aria-label': 'Махни снимката',
             onclick: () => {
-              URL.revokeObjectURL(state.items[i].url);
+              const gone = state.items[i];
+              gone.removed = true;
+              URL.revokeObjectURL(gone.url);
+              if (gone.thumbUrl) URL.revokeObjectURL(gone.thumbUrl);
               state.items.splice(i, 1);
               render();
             },
