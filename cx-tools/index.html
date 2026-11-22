@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CX Tools — инструменти за снимки и файлове, без качване</title>
+<meta name="description" content="Пет инструмента за снимки и файлове, които работят в браузъра на твоето устройство: смали снимки, HEIC към JPG, снимка към PDF, съедини или раздели PDF, отвори ZIP. Без качване, без акаунт, без реклами.">
+<meta name="theme-color" content="#04091a">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="./icons/icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
+<link rel="stylesheet" href="./assets/css/app.css">
+<script>
+  try { var m = localStorage.getItem('cx-tools-mode'); } catch (e) { var m = null; }
+  document.documentElement.dataset.appMode = m === 'light' ? 'light' : 'dark';
+</script>
+</head>
+<body>
+<div class="wrap">
+  <header class="bar">
+    <a class="brand" href="./">
+      <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-3.5L6 21z"/><path d="M11 7h2M11 11h2"/></svg></span>
+      <span>CX Tools<small>без качване</small></span>
+    </a>
+    <button class="modebtn" type="button" data-mode-toggle aria-label="Светъл режим">
+      <svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.2M12 19.2v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.6 12h2.2M19.2 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/></svg><svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.4 14.7A8.5 8.5 0 0 1 9.3 3.6a8.5 8.5 0 1 0 11.1 11.1z"/></svg>
+    </button>
+  </header>
+  <main>
+    <div class="hero">
+      <h1>Инструменти за снимки и файлове, които не качват нищо</h1>
+      <p>Избираш файловете, казваш какво да стане с тях и ги сваляш. Всичко се смята в браузъра ти — нито един файл не отива на сървър.</p>
+      <span class="promise"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.2-2.9 7.6-7 9-4.1-1.4-7-4.8-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg>Файловете не излизат от устройството.</span>
+    </div>
+    <nav class="tiles" aria-label="Инструменти">
+      <a class="tile" href="./smali-snimki/">
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="8.5" cy="9.5" r="1.6"/><path d="M21 15.5l-5-5-7 7"/></svg></span>
+        <span><b>Смали снимки</b><small>под 2 MB, наведнъж</small></span>
+        <span class="go" aria-hidden="true">→</span>
+      </a>
+      <a class="tile" href="./heic-kam-jpg/">
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg></span>
+        <span><b>HEIC към JPG</b><small>снимки от iPhone</small></span>
+        <span class="go" aria-hidden="true">→</span>
+      </a>
+      <a class="tile" href="./snimka-kam-pdf/">
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M9 18h6"/></svg></span>
+        <span><b>Снимка към PDF</b><small>документ от телефона</small></span>
+        <span class="go" aria-hidden="true">→</span>
+      </a>
+      <a class="tile" href="./pdf-instrumenti/">
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="8" height="16" rx="1.5"/><rect x="13" y="4" width="8" height="16" rx="1.5"/><path d="M11 12h2"/></svg></span>
+        <span><b>PDF инструменти</b><small>съедини, раздели</small></span>
+        <span class="go" aria-hidden="true">→</span>
+      </a>
+      <a class="tile" href="./zip/">
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-3.5L6 21z"/><path d="M11 7h2M11 11h2"/></svg></span>
+        <span><b>Отвори ZIP</b><small>виж и свали файловете</small></span>
+        <span class="go" aria-hidden="true">→</span>
+      </a>
+    </nav>
+    <p class="note neutral home-note">
+      ✓ Петте инструмента се зареждат само когато ги отвориш. Първото отваряне тежи под 1 MB, а след това всичко остава на телефона и работи и без интернет.
+    </p>
+  </main>
+  <p id="live" class="sr-only" aria-live="polite" role="status"></p>
+  <footer class="site">
+    CX Tools · без акаунти, без реклами, без проследяване.<br>
+    Всичко се смята на твоето устройство. Можеш да го добавиш на началния екран и да го ползваш офлайн.
+  </footer>
+</div>
+<script type="module">
+  import { initShell } from './assets/js/shell.js';
+  initShell();
+</script>
+</body>
+</html>

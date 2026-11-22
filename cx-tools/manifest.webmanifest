@@ -1,0 +1,33 @@
+{
+  "name": "CX Tools — инструменти за снимки и файлове",
+  "short_name": "CX Tools",
+  "description": "Смали снимки, HEIC към JPG, снимка към PDF, съедини или раздели PDF и отвори ZIP — всичко на твоето устройство, без качване.",
+  "lang": "bg",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#04091a",
+  "theme_color": "#04091a",
+  "categories": ["productivity", "utilities", "photo"],
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

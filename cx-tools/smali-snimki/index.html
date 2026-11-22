@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Смали снимки онлайн до 1, 2 или 5 MB — CX Tools</title>
+<meta name="description" content="Смали много снимки наведнъж под 1 MB, 2 MB или 5 MB директно в браузъра. Без качване и без акаунт: снимките остават на телефона ти. Приема JPG, PNG, WebP и HEIC.">
+<meta name="theme-color" content="#04091a">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../icons/icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="../icons/icon-192.png">
+<link rel="stylesheet" href="../assets/css/app.css">
+<script>
+  try { var m = localStorage.getItem('cx-tools-mode'); } catch (e) { var m = null; }
+  document.documentElement.dataset.appMode = m === 'light' ? 'light' : 'dark';
+</script>
+</head>
+<body>
+<div class="wrap">
+  <header class="bar">
+    <a class="brand" href="../index.html">
+      <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-3.5L6 21z"/><path d="M11 7h2M11 11h2"/></svg></span>
+      <span>CX Tools<small>без качване</small></span>
+    </a>
+    <button class="modebtn" type="button" data-mode-toggle aria-label="Светъл режим">
+      <svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.2M12 19.2v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.6 12h2.2M19.2 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/></svg><svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.4 14.7A8.5 8.5 0 0 1 9.3 3.6a8.5 8.5 0 1 0 11.1 11.1z"/></svg>
+    </button>
+  </header>
+  <main>
+    <a class="back" href="../index.html"><span aria-hidden="true">←</span> Всички инструменти</a>
+    <div class="toolhead">
+      <h1>Смали снимки</h1>
+      <p>Избираш много снимки, казваш колко големи да станат, и ги сваляш в един архив. Нищо не се качва.</p>
+      <span class="promise"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.2-2.9 7.6-7 9-4.1-1.4-7-4.8-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg>Файловете не излизат от устройството.</span>
+    </div>
+    <div id="app"></div>
+  </main>
+  <p id="live" class="sr-only" aria-live="polite" role="status"></p>
+  <footer class="site">
+    CX Tools · Смали снимки · всичко се смята на твоето устройство.<br>
+    <a href="../index.html">Всички инструменти</a>
+  </footer>
+</div>
+<script type="module">
+  import { initShell } from '../assets/js/shell.js';
+  initShell();
+  import('../assets/js/tools/shrink.js').then((mod) => mod.start()).catch((err) => {
+    const app = document.getElementById('app');
+    if (app) {
+      app.innerHTML = '<div class="panel"><div class="note bad" role="alert">Инструментът не се зареди: ' +
+        (err && err.message ? err.message : 'непозната грешка') + '</div></div>';
+    }
+  });
+</script>
+</body>
+</html>
