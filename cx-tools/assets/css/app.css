@@ -113,12 +113,9 @@ a { color: var(--app-accent); }
   min-height: 44px;
 }
 .brand .mark {
-  width: 30px; height: 30px; border-radius: 9px; flex: none;
-  display: grid; place-items: center;
-  background: color-mix(in srgb, var(--app-accent) 20%, transparent);
-  color: var(--app-accent);
+  width: 32px; height: 32px; border-radius: 10px; flex: none; display: block;
 }
-.brand .mark svg { width: 18px; height: 18px; }
+.brand .mark img { width: 32px; height: 32px; display: block; }
 .brand small { display: block; font: 400 11px/1.2 var(--app-mono); color: var(--app-subtle); }
 
 .modebtn {
@@ -155,8 +152,8 @@ html[data-app-mode='light'] .modebtn .ic-moon { display: block; }
 @media (min-width: 920px) { .tiles { grid-template-columns: repeat(3, 1fr); } }
 
 .tile {
-  display: flex; align-items: flex-start; gap: 12px;
-  padding: 16px 14px; min-height: 92px;
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 14px; min-height: 96px;
   border: 1px solid var(--app-border); border-radius: var(--app-radius);
   background: var(--app-surface); color: var(--app-text); text-decoration: none;
   transition: border-color 0.15s, background 0.15s;
@@ -166,12 +163,10 @@ html[data-app-mode='light'] .modebtn .ic-moon { display: block; }
   background: color-mix(in srgb, var(--app-accent) 6%, var(--app-surface));
 }
 .tile .ic {
-  width: 34px; height: 34px; border-radius: 10px; flex: none;
-  display: grid; place-items: center;
-  background: color-mix(in srgb, var(--app-accent) 16%, transparent);
-  color: var(--app-accent);
+  width: 56px; height: 56px; border-radius: 14px; flex: none;
+  display: block; overflow: hidden;
 }
-.tile .ic svg { width: 19px; height: 19px; }
+.tile .ic img { width: 56px; height: 56px; display: block; }
 .tile b { display: block; font-size: 15.5px; line-height: 1.25; }
 .tile small { display: block; color: var(--app-muted); font-size: 13px; line-height: 1.4; margin-top: 3px; }
 .tile .go { margin-left: auto; color: var(--app-subtle); font-size: 18px; line-height: 1; padding-top: 4px; }

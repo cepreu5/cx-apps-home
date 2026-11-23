@@ -2,7 +2,7 @@
 // anything else same-origin (the vendored pdf-lib and the HEIC wasm ~1.5 MB) is
 // cached the first time it is used. Bump VERSION to invalidate the cache.
 
-const VERSION = 'cx-tools-v3';
+const VERSION = 'cx-tools-v4';
 const CACHE = VERSION;
 
 const SHELL = [
@@ -27,6 +27,12 @@ const SHELL = [
   './assets/fonts/atkinson-hyperlegible-next-latin-700-normal.woff2',
   './assets/fonts/atkinson-hyperlegible-next-latin-ext-400-normal.woff2',
   './assets/fonts/atkinson-hyperlegible-next-latin-ext-700-normal.woff2',
+  './assets/img/tile-shrink.webp',
+  './assets/img/tile-heic.webp',
+  './assets/img/tile-pdf.webp',
+  './assets/img/tile-tools.webp',
+  './assets/img/tile-zip.webp',
+  './icons/logo-144.png',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/icon-maskable-512.png',
