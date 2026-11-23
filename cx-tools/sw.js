@@ -2,7 +2,7 @@
 // anything else same-origin (the vendored pdf-lib and the HEIC wasm ~1.5 MB) is
 // cached the first time it is used. Bump VERSION to invalidate the cache.
 
-const VERSION = 'cx-tools-v6';
+const VERSION = 'cx-tools-v7';
 const CACHE = VERSION;
 
 const SHELL = [
@@ -33,6 +33,7 @@ const SHELL = [
   './assets/img/tile-tools.webp',
   './assets/img/tile-zip.webp',
   './icons/logo-144.png',
+  './icons/logo-48.png',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/icon-maskable-512.png',
